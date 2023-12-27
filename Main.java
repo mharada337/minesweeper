@@ -8,7 +8,6 @@ public class Main {
         }
         for(int i = 0; i < 9; i++) {
             for(int j = 0; j < 9; j++) {
-                //trial
                 // if((i == 0) && (ground[i][j] == 9)) {
                 //     ground[i][j - 1]++;
                 //     ground[i][j + 1]++;
