@@ -1,106 +1,54 @@
-public class Main {
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Graphics;
 
-    public static int[][] ground = new int[10][10];
+public class Main extends JPanel {
+
+    public static final int WIDTH = 220;
+    public static final int HEIGHT = 220;
+    public static final int FPS = 60;
+    World world;
+
+    class Runner implements Runnable {
+            public void run() {
+                while(true){
+                        repaint();
+                    try {
+                        Thread.sleep(1000/FPS);
+                    }
+                    catch(InterruptedException e){}
+                }
+         
+            }
+        }
+
+    public Main() {
+        world = new World();
+        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        Thread mainThread = new Thread(new Runner());
+        mainThread.start();
+    }
 
     public static void main(String[] args) {
+       JFrame frame = new JFrame("Minesweeper");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setMines(ground);
-        setMarkers(ground);
+        Main mainInstance = new Main();
+        frame.setContentPane(mainInstance);
 
-        for(int i = 0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {
-                System.out.print(ground[i][j] + " ");
-            }
-            System.out.println();
-        }
+        frame.pack();
+        frame.setVisible(true);
 
     }
 
-    public static void setMines(int[][] ground) {
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+     
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        for(int mines = 0; mines < 10; mines++) {
-            int x = (int)(Math.random() * 9);
-            int y = (int)(Math.random() * 9);
-            ground[x][y] = 9;
-        }
-
+        world.drawWorld(g);
     }
-
-    public static void setMarkers(int[][] ground) {
-        for(int i = 0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {
-                if(ground[i][j] == 9) {
-                    if(i == 0) {
-                        if(j == 0) {
-                            checkMine(ground, i + 1, j);
-                            checkMine(ground, i, j + 1);
-                            checkMine(ground, i + 1, j + 1);
-                        }
-                        else if(j == 8) {
-                            checkMine(ground, i + 1, j);
-                            checkMine(ground, i, j - 1);
-                            checkMine(ground, i + 1, j - 1);
-                        }
-                        else {
-                            checkMine(ground, i + 1, j);
-                            checkMine(ground, i + 1, j - 1);
-                            checkMine(ground, i + 1, j + 1);
-                            checkMine(ground, i, j - 1);
-                            checkMine(ground, i, j + 1);
-                        }
-                    }
-                    else if(i == 8) {
-                        if(j == 0) {
-                            checkMine(ground, i - 1, j);
-                            checkMine(ground, i - 1, j + 1);
-                            checkMine(ground, i, j + 1);
-                        }
-                        else if(j == 8) {
-                            checkMine(ground, i - 1, j);
-                            checkMine(ground, i - 1, j - 1);
-                            checkMine(ground, i, j - 1);
-                        }
-                        else { 
-                            checkMine(ground, i - 1, j);
-                            checkMine(ground, i - 1, j - 1);
-                            checkMine(ground, i - 1, j + 1);
-                            checkMine(ground, i, j - 1);
-                            checkMine(ground, i, j + 1);
-                        }
-                    }
-                    else if(j == 0) {
-                        checkMine(ground, i - 1, j);
-                        checkMine(ground, i - 1, j + 1);
-                        checkMine(ground, i, j + 1);
-                        checkMine(ground, i + 1, j);
-                        checkMine(ground, i + 1, j + 1);
-                    }
-                    else if(j == 8) {
-                        checkMine(ground, i - 1, j - 1);
-                        checkMine(ground, i - 1, j);
-                        checkMine(ground, i, j - 1);
-                        checkMine(ground, i + 1, j - 1);
-                        checkMine(ground, i + 1, j);
-                    }
-                    else {
-                        checkMine(ground, i - 1, j - 1);
-                        checkMine(ground, i - 1, j);
-                        checkMine(ground, i - 1, j + 1);
-                        checkMine(ground, i, j - 1);
-                        checkMine(ground, i, j + 1);
-                        checkMine(ground, i + 1, j - 1);
-                        checkMine(ground, i + 1, j);
-                        checkMine(ground, i + 1, j + 1);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void checkMine(int[][] ground, int i, int j) {
-        if(ground[i][j] != 9) {
-            ground[i][j]++;
-        }
-    }
-
 }
