@@ -6,8 +6,8 @@ import java.awt.Graphics;
 
 public class Main extends JPanel {
 
-    public static final int WIDTH = 220;
-    public static final int HEIGHT = 220;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 1000;
     public static final int FPS = 60;
     World world;
 

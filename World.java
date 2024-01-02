@@ -3,9 +3,12 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class World {
-    public static int[][] ground = new int[10][10];
+    public static int width = 30;
+    public static int height = 16;
+    private static int[][] ground = new int[height][width];
     private BufferedImage tile;
     private BufferedImage marker1;
     private BufferedImage marker2;
@@ -44,128 +47,130 @@ public class World {
     }
 
     public static void setMines(int[][] ground) {
-        int mines = 0;
-        while(mines < 10) {
-            int x = (int)(Math.random() * 9);
-            int y = (int)(Math.random() * 9);
-            
-            if(ground[x][y] != 9) {
-                ground[x][y] = 9;
-                mines++;
-            }
+        ArrayList<Integer> locations = new ArrayList<Integer>();
+        for(int i = 0; i < width * height; i++) {
+            locations.add(i);
+        }
+        for(int mines = 0; mines < 99; mines++) {
+            int rand = (int)(Math.random() * (width * height - mines));
+            int mineX = locations.get(rand) % width;
+            int mineY = locations.get(rand)/width;
+            ground[mineY][mineX] = 9;
+            locations.remove(rand);
         }
     }
 
     public static void setMarkers(int[][] ground) {
-        for(int i = 0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {
-                if(ground[i][j] == 9) {
-                    if(i == 0) {
-                        if(j == 0) {
-                            checkMine(ground, i + 1, j);
-                            checkMine(ground, i, j + 1);
-                            checkMine(ground, i + 1, j + 1);
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                if(ground[y][x] == 9) {
+                    if(y == 0) {
+                        if(x == 0) {
+                            checkMine(ground, y + 1, x);
+                            checkMine(ground, y, x + 1);
+                            checkMine(ground, y + 1, x + 1);
                         }
-                        else if(j == 8) {
-                            checkMine(ground, i + 1, j);
-                            checkMine(ground, i, j - 1);
-                            checkMine(ground, i + 1, j - 1);
+                        else if(x == width - 1) {
+                            checkMine(ground, y + 1, x);
+                            checkMine(ground, y, x - 1);
+                            checkMine(ground, y + 1, x - 1);
                         }
                         else {
-                            checkMine(ground, i + 1, j);
-                            checkMine(ground, i + 1, j - 1);
-                            checkMine(ground, i + 1, j + 1);
-                            checkMine(ground, i, j - 1);
-                            checkMine(ground, i, j + 1);
+                            checkMine(ground, y + 1, x);
+                            checkMine(ground, y + 1, x - 1);
+                            checkMine(ground, y + 1, x + 1);
+                            checkMine(ground, y, x - 1);
+                            checkMine(ground, y, x + 1);
                         }
                     }
-                    else if(i == 8) {
-                        if(j == 0) {
-                            checkMine(ground, i - 1, j);
-                            checkMine(ground, i - 1, j + 1);
-                            checkMine(ground, i, j + 1);
+                    else if(y == height - 1) {
+                        if(x == 0) {
+                            checkMine(ground, y - 1, x);
+                            checkMine(ground, y - 1, x + 1);
+                            checkMine(ground, y, x + 1);
                         }
-                        else if(j == 8) {
-                            checkMine(ground, i - 1, j);
-                            checkMine(ground, i - 1, j - 1);
-                            checkMine(ground, i, j - 1);
+                        else if(x == width - 1) {
+                            checkMine(ground, y - 1, x);
+                            checkMine(ground, y - 1, x - 1);
+                            checkMine(ground, y, x - 1);
                         }
                         else { 
-                            checkMine(ground, i - 1, j);
-                            checkMine(ground, i - 1, j - 1);
-                            checkMine(ground, i - 1, j + 1);
-                            checkMine(ground, i, j - 1);
-                            checkMine(ground, i, j + 1);
+                            checkMine(ground, y - 1, x);
+                            checkMine(ground, y - 1, x - 1);
+                            checkMine(ground, y - 1, x + 1);
+                            checkMine(ground, y, x - 1);
+                            checkMine(ground, y, x + 1);
                         }
                     }
-                    else if(j == 0) {
-                        checkMine(ground, i - 1, j);
-                        checkMine(ground, i - 1, j + 1);
-                        checkMine(ground, i, j + 1);
-                        checkMine(ground, i + 1, j);
-                        checkMine(ground, i + 1, j + 1);
+                    else if(x == 0) {
+                        checkMine(ground, y - 1, x);
+                        checkMine(ground, y - 1, x + 1);
+                        checkMine(ground, y, x + 1);
+                        checkMine(ground, y + 1, x);
+                        checkMine(ground, y + 1, x + 1);
                     }
-                    else if(j == 8) {
-                        checkMine(ground, i - 1, j - 1);
-                        checkMine(ground, i - 1, j);
-                        checkMine(ground, i, j - 1);
-                        checkMine(ground, i + 1, j - 1);
-                        checkMine(ground, i + 1, j);
+                    else if(x == width - 1) {
+                        checkMine(ground, y - 1, x - 1);
+                        checkMine(ground, y - 1, x);
+                        checkMine(ground, y, x - 1);
+                        checkMine(ground, y + 1, x - 1);
+                        checkMine(ground, y + 1, x);
                     }
                     else {
-                        checkMine(ground, i - 1, j - 1);
-                        checkMine(ground, i - 1, j);
-                        checkMine(ground, i - 1, j + 1);
-                        checkMine(ground, i, j - 1);
-                        checkMine(ground, i, j + 1);
-                        checkMine(ground, i + 1, j - 1);
-                        checkMine(ground, i + 1, j);
-                        checkMine(ground, i + 1, j + 1);
+                        checkMine(ground, y - 1, x - 1);
+                        checkMine(ground, y - 1, x);
+                        checkMine(ground, y - 1, x + 1);
+                        checkMine(ground, y, x - 1);
+                        checkMine(ground, y, x + 1);
+                        checkMine(ground, y + 1, x - 1);
+                        checkMine(ground, y + 1, x);
+                        checkMine(ground, y + 1, x + 1);
                     }
                 }
             }
         }
     }
 
-    public static void checkMine(int[][] ground, int i, int j) {
-        if(ground[i][j] != 9) {
-            ground[i][j]++;
+    public static void checkMine(int[][] ground, int y, int x) {
+        if(ground[y][x] != 9) {
+            ground[y][x]++;
         }
     }
 
     public void drawWorld(Graphics g) {
-        for(int i = 1; i < 10; i++) {
-            for(int j = 1; j < 10; j++) {
-                if(ground[i - 1][j - 1] == 0) {
-                    g.drawImage(clear, 20 * i, 20 * j, null);
+        for(int y = 1; y < height + 1; y++) {
+            for(int x = 1; x < width + 1; x++) {
+                if(ground[y - 1][x - 1] == 0) {
+                    g.drawImage(clear, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 1) {
-                    g.drawImage(marker1, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 1) {
+                    g.drawImage(marker1, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 2) {
-                    g.drawImage(marker2, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 2) {
+                    g.drawImage(marker2, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 3) {
-                    g.drawImage(marker3, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 3) {
+                    g.drawImage(marker3, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 4) {
-                    g.drawImage(marker4, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 4) {
+                    g.drawImage(marker4, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 5) {
-                    g.drawImage(marker5, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 5) {
+                    g.drawImage(marker5, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 6) {
-                    g.drawImage(marker6, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 6) {
+                    g.drawImage(marker6, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 7) {
-                    g.drawImage(marker7, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 7) {
+                    g.drawImage(marker7, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 8) {
-                    g.drawImage(marker8, 20 * i, 20 * j, null);
+                if(ground[y - 1][x - 1] == 8) {
+                    g.drawImage(marker8, 20 * x, 20 * y, null);
                 }
-                if(ground[i - 1][j - 1] == 9) {
-                    g.drawImage(mine, i * 20, j * 20, null);
+                if(ground[y - 1][x - 1] == 9) {
+                    g.drawImage(mine, 20 * x, 20 * y, null);
                 }
+                // g.drawImage(tile, 20 * i, 20 * j, null);
             }
         }
     }
