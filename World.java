@@ -6,8 +6,9 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class World {
-    public static int width = 30;
-    public static int height = 16;
+    private static int width = 30;
+    private static int height = 16;
+    private static boolean[] revealed = new boolean[width*height];
     private static int[][] ground = new int[height][width];
     private BufferedImage tile;
     private BufferedImage marker1;
@@ -25,6 +26,10 @@ public class World {
     public World() {
         setMines(ground);
         setMarkers(ground);
+
+        for(int i = 0; i < revealed.length; i++) {
+            revealed[i] = false;
+        }
 
         try {
             tile = ImageIO.read(new File("images/tile.png"));
@@ -137,42 +142,52 @@ public class World {
         }
     }
 
+    public void reveal(int userX, int userY) {
+        int pointX = (userX - 20)/20;
+        int pointY = (userY - 20)/20;
+        int revealedArrayIndex = pointY * width + pointX;
+        revealed[revealedArrayIndex] = true;
+    }
+
     public void drawWorld(Graphics g) {
         for(int y = 1; y < height + 1; y++) {
             for(int x = 1; x < width + 1; x++) {
-                if(ground[y - 1][x - 1] == 0) {
-                    g.drawImage(clear, 20 * x, 20 * y, null);
+                if(revealed[(y - 1) * width + (x - 1)] == false) {
+                    g.drawImage(tile, x * 20, y * 20, null);
                 }
-                if(ground[y - 1][x - 1] == 1) {
-                    g.drawImage(marker1, 20 * x, 20 * y, null);
+                else {
+                    if(ground[y - 1][x - 1] == 0) {
+                        g.drawImage(clear, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 1) {
+                        g.drawImage(marker1, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 2) {
+                        g.drawImage(marker2, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 3) {
+                        g.drawImage(marker3, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 4) {
+                        g.drawImage(marker4, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 5) {
+                        g.drawImage(marker5, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 6) {
+                        g.drawImage(marker6, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 7) {
+                        g.drawImage(marker7, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 8) {
+                        g.drawImage(marker8, 20 * x, 20 * y, null);
+                    }
+                    if(ground[y - 1][x - 1] == 9) {
+                        g.drawImage(mine, 20 * x, 20 * y, null);
+                    }
                 }
-                if(ground[y - 1][x - 1] == 2) {
-                    g.drawImage(marker2, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 3) {
-                    g.drawImage(marker3, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 4) {
-                    g.drawImage(marker4, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 5) {
-                    g.drawImage(marker5, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 6) {
-                    g.drawImage(marker6, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 7) {
-                    g.drawImage(marker7, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 8) {
-                    g.drawImage(marker8, 20 * x, 20 * y, null);
-                }
-                if(ground[y - 1][x - 1] == 9) {
-                    g.drawImage(mine, 20 * x, 20 * y, null);
-                }
-                // g.drawImage(tile, 20 * i, 20 * j, null);
             }
         }
     }
-
 }
