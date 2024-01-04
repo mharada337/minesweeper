@@ -10,6 +10,7 @@ public class World {
     private static int height = 16;
     private static boolean[] revealed = new boolean[width*height];
     private static int[][] ground = new int[height][width];
+    private boolean start = false;
     private BufferedImage tile;
     private BufferedImage marker1;
     private BufferedImage marker2;
@@ -24,9 +25,6 @@ public class World {
     private BufferedImage mine;
 
     public World() {
-        setMines(ground);
-        setMarkers(ground);
-
         for(int i = 0; i < revealed.length; i++) {
             revealed[i] = false;
         }
@@ -51,13 +49,22 @@ public class World {
         }
     }
 
-    public static void setMines(int[][] ground) {
+    public static void setMines(int[][] ground, int blank) {
         ArrayList<Integer> locations = new ArrayList<Integer>();
         for(int i = 0; i < width * height; i++) {
             locations.add(i);
         }
+        locations.remove(blank + width + 1);
+        locations.remove(blank + width);
+        locations.remove(blank + width - 1);
+        locations.remove(blank + 1);
+        locations.remove(blank);
+        locations.remove(blank - 1);
+        locations.remove(blank - width + 1);
+        locations.remove(blank - width);
+        locations.remove(blank - width - 1);
         for(int mines = 0; mines < 99; mines++) {
-            int rand = (int)(Math.random() * (width * height - mines));
+            int rand = (int)(Math.random() * (width * height - mines - 9));
             int mineX = locations.get(rand) % width;
             int mineY = locations.get(rand)/width;
             ground[mineY][mineX] = 9;
@@ -146,6 +153,11 @@ public class World {
         int pointX = (userX - 20)/20;
         int pointY = (userY - 20)/20;
         int revealedArrayIndex = pointY * width + pointX;
+        if(start == false) {
+            setMines(ground, revealedArrayIndex);
+            setMarkers(ground);
+            start = true;
+        }
         revealed[revealedArrayIndex] = true;
     }
 
